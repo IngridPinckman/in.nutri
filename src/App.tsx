@@ -52,7 +52,7 @@ function App() {
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('nutricionistas')
       .select('*')
       .eq('id', userId)
