@@ -147,3 +147,24 @@
   transform: translateY(-50%);
   color: var(--text-muted);
 }
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .tab-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+  }
+}

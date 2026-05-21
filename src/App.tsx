@@ -6,7 +6,9 @@ import {
   LogOut, 
   User,
   Mail,
-  Lock
+  Lock,
+  Menu,
+  X
 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import Dashboard from './components/Dashboard';
@@ -32,6 +34,7 @@ function App() {
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
   const [showProfileEditor, setShowProfileEditor] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Check active session
@@ -183,27 +186,36 @@ function App() {
 
   // Dashboard View
   return (
-    <div className="app-container">
-      <aside className="sidebar">
+    <div className={`app-container ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {isSidebarOpen && (
+        <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />
+      )}
+
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header-mobile">
+          <button className="btn-close-sidebar" onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} />
+          </button>
+        </div>
         <div className="logo-area" style={{ flexDirection: 'column', alignItems: 'center', gap: '0.25rem', marginBottom: '2rem' }}>
           <img src="/logo.png?v=2" alt="In.Nutri" style={{ width: '100%', maxWidth: '280px', height: 'auto', backgroundColor: '#ffffff', borderRadius: '12px', padding: '0.5rem' }} />
         </div>
         <nav className="nav-links">
           <button 
-            onClick={() => { setActiveTab('dashboard'); setSelectedPatientId(null); }} 
+            onClick={() => { setActiveTab('dashboard'); setSelectedPatientId(null); setIsSidebarOpen(false); }} 
             className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
           >
             <LayoutDashboard size={20} /> Dashboard
           </button>
           <button 
-            onClick={() => { setActiveTab('pacientes'); setSelectedPatientId(null); }} 
+            onClick={() => { setActiveTab('pacientes'); setSelectedPatientId(null); setIsSidebarOpen(false); }} 
             className={`nav-item ${activeTab === 'pacientes' ? 'active' : ''}`}
           >
             <Users size={20} /> Pacientes
           </button>
         </nav>
         <div className="nav-links" style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-          <button onClick={handleLogout} className="nav-item" style={{ color: '#c53030' }}>
+          <button onClick={() => { handleLogout(); setIsSidebarOpen(false); }} className="nav-item" style={{ color: '#c53030' }}>
             <LogOut size={20} /> Sair
           </button>
         </div>
@@ -211,11 +223,16 @@ function App() {
 
       <main className="main-content">
         <header className="header">
-          <div>
-            <h1>Olá, {userData?.nome || 'Nutricionista'}</h1>
-            <p style={{ color: 'var(--text-muted)' }}>
-              {activeTab === 'dashboard' ? 'Bem vinda' : 'Gerenciamento de pacientes.'}
-            </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button className="btn-menu-toggle" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={24} />
+            </button>
+            <div>
+              <h1>Olá, {userData?.nome || 'Nutricionista'}</h1>
+              <p style={{ color: 'var(--text-muted)' }}>
+                {activeTab === 'dashboard' ? 'Bem vinda' : 'Gerenciamento de pacientes.'}
+              </p>
+            </div>
           </div>
           <button className="btn-outline" onClick={() => setShowProfileEditor(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
             <User size={20} color="var(--primary)" />
